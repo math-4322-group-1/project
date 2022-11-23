@@ -66,9 +66,15 @@ Dosbol, you're up!
 
 #### Split data into training and testing set
 
+Below, we are now splitting the data into training and testing sets. With the training set containing 80% of the data and the testing set containing 20%. 
+
 ```{r}
 sample <- sample(c(TRUE, FALSE), nrow(data), replace=TRUE, prob=c(0.8,0.2))
+train  <- data[sample, ]
+test   <- data[!sample, ]
 
+print(nrow(train))
+print(nrow(test))
 ```
 
 
