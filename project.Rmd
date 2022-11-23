@@ -11,6 +11,9 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Project 1
 
+### Introduction
+
+This data was extracted from the U.S. Census in 1994.
 
 ### Features
 
