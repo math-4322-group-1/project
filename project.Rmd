@@ -64,10 +64,15 @@ summary(data)
 In this data, many categorical variables are needed to be converted to numeric and make a Dummy variable for the response variable.
 
 ```{r}
+### 1. Class  (<=50K or 50K>)
 data$class_dummy = ifelse(data$class==" <=50K",0,1) # Our Response Variable. I made 0 for below 50K and 1 for above 50K
+
+### 2. Sex  (Female, Male)
 data$sex_dummy = ifelse(data$sex==" Female",0,1)
 
 
+
+### 3. Workclass
 data$workclass_dummy = ifelse(data$workclass==" Private",0,
                                   ifelse(data$workclass==" State-gov",1,
                                          ifelse(data$workclass ==" Federal-gov",2,
@@ -77,6 +82,7 @@ data$workclass_dummy = ifelse(data$workclass==" Private",0,
 
 
 
+### 4. Marital Status
 data$marital.status_dummy = ifelse(data$marital.status == " Widowed",0,
                                    ifelse(data$marital.status == " Divorced",1,
                                           ifelse(data$marital.status == " Separated",2,
@@ -88,17 +94,19 @@ data$marital.status_dummy = ifelse(data$marital.status == " Widowed",0,
 
 
 
-
+### 5. Race
 data$race_dummy = ifelse(data$race ==" White",0,
                          ifelse(data$race == " Black",1,
                                 ifelse(data$race==" Asian-Pac_islander",2,
                                        ifelse(data$race==" Amer-Indian-Eskimo",3,4))))
-
+### 6. Relationship
 data$relationship_dummy = ifelse(data$relationship==" Husband",1,
                                  ifelse(data$relationship==" Wife",1,0))
 
 
-# I grouped them 
+
+### 7. Education
+# I grouped them by following:
 
 # 0 means all students who are in 1st to 12 grade
 # 1 means all students who are in HS-grad, Assos-acdm, Prof-school
@@ -123,6 +131,14 @@ data$education_dummy=ifelse(data$education==" Prepschool",0,
                                                                                                                                                                ifelse(data$education==" Doctorate",4, 5))))))))))))))))
 
 print(data$education_dummy)
+
+
+### 8. Native Country
+
+data$native.country_dummy = ifelse(data$native.country==" United-States",0,1)
+# So most people are from the United States, so I assigned them to 0 and other countries to 1
+
+
 ```
 
 
