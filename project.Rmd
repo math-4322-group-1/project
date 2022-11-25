@@ -97,21 +97,30 @@ data$race_dummy = ifelse(data$race ==" White",0,
 data$relationship_dummy = ifelse(data$relationship==" Husband",1,
                                  ifelse(data$relationship==" Wife",1,0))
 
-data$education_dummy=ifelse(data$education==" Prepschool","school",
-                            ifelse(data$education==" 1st-4th","school",
-                                   ifelse(data$education== "5th-6th",'school',
-                                          ifelse(data$education==" 7th-8th","school",
-                                                 ifelse(data$education==" 9th","school", ifelse(data$education==" 10th","school",
-                                                                                                ifelse(data$education==" 11th","school",
-                                                                                                       ifelse(data$education==" 12th","school",
-                                                                                                              ifelse(data$education==" HS-grad","High School",
-                                                                                                                     ifelse(data$education==" Assos-voc", "Higher",
-                                                                                                                            ifelse(data$education==" Assoc-acdm","Higher",
-                                                                                                                                   ifelse(data$education==" Prof-school","Higher",
-                                                                                                                                          ifelse(data$education==" Some-college","Higher",
-                                                                                                                                                 ifelse(data$education==" Bachelors","Undergrad",
-                                                                                                                                                        ifelse(data$education==" Masters","Grad",
-                                                                                                                                                               ifelse(data$education==" Doctorate","Doc", "UNKOWN"))))))))))))))))
+
+# I grouped them 
+
+# 0 means all students who are in 1st to 12 grade
+# 1 means all students who are in HS-grad, Assos-acdm, Prof-school
+# 2 means all students who are in Bachelors Degree
+# 3 means all students who are in Masters' Degree
+# 4 means all students who are in Doc 
+# and 5 means UNKNOWNs
+data$education_dummy=ifelse(data$education==" Prepschool",0,
+                            ifelse(data$education==" 1st-4th",0,
+                                   ifelse(data$education== "5th-6th",0,
+                                          ifelse(data$education==" 7th-8th",0,
+                                                 ifelse(data$education==" 9th",0, ifelse(data$education==" 10th",0,
+                                                                                                ifelse(data$education==" 11th",0,
+                                                                                                       ifelse(data$education==" 12th",0,
+                                                                                                              ifelse(data$education==" HS-grad",1,
+                                                                                                                     ifelse(data$education==" Assos-voc", 1,
+                                                                                                                            ifelse(data$education==" Assoc-acdm",1,
+                                                                                                                                   ifelse(data$education==" Prof-school",1,
+                                                                                                                                          ifelse(data$education==" Some-college",1,
+                                                                                                                                                 ifelse(data$education==" Bachelors",2,
+                                                                                                                                                        ifelse(data$education==" Masters",3,
+                                                                                                                                                               ifelse(data$education==" Doctorate",4, 5))))))))))))))))
 
 print(data$education_dummy)
 ```
