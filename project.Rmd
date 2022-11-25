@@ -61,8 +61,45 @@ summary(data)
 ```
 
 #### Set categorical features to dummy variables
+In this data, many categorical variables are needed to be converted to numeric and make a Dummy variable for the response variable.
 
-Dosbol, you're up!
+```{r}
+data$class_dummy = ifelse(data$class==" <=50K",0,1) # Our Response Variable. I made 0 for below 50K and 1 for above 50K
+data$sex_dummy = ifelse(data$sex==" Female",0,1)
+
+
+data$workclass_dummy = ifelse(data$workclass==" Private",0,
+                                  ifelse(data$workclass==" State-gov",1,
+                                         ifelse(data$workclass ==" Federal-gov",2,
+                                                ifelse(data$workclass == " Self-emp-not-inc",3, 
+                                                       ifelse(data$workclass==" Self-emp-inc",4, 
+                                                              ifelse(data$workclass==" Local-gov",5,6)))))) #
+
+
+
+data$marital.status_dummy = ifelse(data$marital.status == " Widowed",0,
+                                   ifelse(data$marital.status == " Divorced",1,
+                                          ifelse(data$marital.status == " Separated",2,
+                                                 ifelse(data$marital.status == " Never-married",3,
+                                                        ifelse(data$marital.status== " Married-civ-spouse",4,
+                                                               ifelse(data$marital.status==" Married-AF-spouse",4,5
+                                                                      ))))))
+
+
+
+
+
+data$race_dummy = ifelse(data$race ==" White",0,
+                         ifelse(data$race == " Black",1,
+                                ifelse(data$race==" Asian-Pac_islander",2,
+                                       ifelse(data$race==" Amer-Indian-Eskimo",3,4))))
+
+data$relationship_dummy = ifelse(data$relationship==" Husband",1,
+                                 ifelse(data$relationship==" Wife",1,0))
+
+print(data$relationship_dummy)
+```
+
 
 #### Split data into training and testing set
 
