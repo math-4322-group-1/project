@@ -97,7 +97,23 @@ data$race_dummy = ifelse(data$race ==" White",0,
 data$relationship_dummy = ifelse(data$relationship==" Husband",1,
                                  ifelse(data$relationship==" Wife",1,0))
 
-print(data$relationship_dummy)
+data$education_dummy=ifelse(data$education==" Prepschool","school",
+                            ifelse(data$education==" 1st-4th","school",
+                                   ifelse(data$education== "5th-6th",'school',
+                                          ifelse(data$education==" 7th-8th","school",
+                                                 ifelse(data$education==" 9th","school", ifelse(data$education==" 10th","school",
+                                                                                                ifelse(data$education==" 11th","school",
+                                                                                                       ifelse(data$education==" 12th","school",
+                                                                                                              ifelse(data$education==" HS-grad","High School",
+                                                                                                                     ifelse(data$education==" Assos-voc", "Higher",
+                                                                                                                            ifelse(data$education==" Assoc-acdm","Higher",
+                                                                                                                                   ifelse(data$education==" Prof-school","Higher",
+                                                                                                                                          ifelse(data$education==" Some-college","Higher",
+                                                                                                                                                 ifelse(data$education==" Bachelors","Undergrad",
+                                                                                                                                                        ifelse(data$education==" Masters","Grad",
+                                                                                                                                                               ifelse(data$education==" Doctorate","Doc", "UNKOWN"))))))))))))))))
+
+print(data$education_dummy)
 ```
 
 
