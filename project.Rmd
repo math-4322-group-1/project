@@ -1,6 +1,6 @@
 ---
 title: "Project Group 1"
-author: "Adil Iqbal"
+author: "Adil Iqbal, Angelita Krepel"
 date: "11/22/2022"
 output: word_document
 ---
@@ -37,6 +37,9 @@ native.country: United-States, Cambodia, England, Puerto-Rico, Canada, Germany, 
 
 class: >50K, <=50K.
 
+#### Question
+Can we predict if an individual will make 50K or more based on a list of predictors?
+
 ```{r}
 set.seed(1)
 data = read.csv("adult.csv")
@@ -65,15 +68,16 @@ In this data, many categorical variables are needed to be converted to numeric a
 
 ```{r}
 ### 1. Class  (<=50K or 50K>)
-data$class_dummy = ifelse(data$class==" <=50K",0,1) # Our Response Variable. I made 0 for below 50K and 1 for above 50K
+data$class = ifelse(data$class==" <=50K",0,1) # Our Response Variable. I made 0 for below 50K and 1 for above 50K
+
 
 ### 2. Sex  (Female, Male)
-data$sex_dummy = ifelse(data$sex==" Female",0,1)
+data$sex = ifelse(data$sex==" Female",0,1)
 
 
 
 ### 3. Workclass
-data$workclass_dummy = ifelse(data$workclass==" Private",0,
+data$workclass = ifelse(data$workclass==" Private",0,
                                   ifelse(data$workclass==" State-gov",1,
                                          ifelse(data$workclass ==" Federal-gov",2,
                                                 ifelse(data$workclass == " Self-emp-not-inc",3, 
@@ -83,7 +87,7 @@ data$workclass_dummy = ifelse(data$workclass==" Private",0,
 
 
 ### 4. Marital Status
-data$marital.status_dummy = ifelse(data$marital.status == " Widowed",0,
+data$marital.status = ifelse(data$marital.status == " Widowed",0,
                                    ifelse(data$marital.status == " Divorced",1,
                                           ifelse(data$marital.status == " Separated",2,
                                                  ifelse(data$marital.status == " Never-married",3,
@@ -95,12 +99,12 @@ data$marital.status_dummy = ifelse(data$marital.status == " Widowed",0,
 
 
 ### 5. Race
-data$race_dummy = ifelse(data$race ==" White",0,
+data$race = ifelse(data$race ==" White",0,
                          ifelse(data$race == " Black",1,
                                 ifelse(data$race==" Asian-Pac_islander",2,
                                        ifelse(data$race==" Amer-Indian-Eskimo",3,4))))
 ### 6. Relationship
-data$relationship_dummy = ifelse(data$relationship==" Husband",1,
+data$relationship = ifelse(data$relationship==" Husband",1,
                                  ifelse(data$relationship==" Wife",1,0))
 
 
@@ -114,7 +118,7 @@ data$relationship_dummy = ifelse(data$relationship==" Husband",1,
 # 3 means all students who are in Masters' Degree
 # 4 means all students who are in Doc 
 # and 5 means UNKNOWNs
-data$education_dummy=ifelse(data$education==" Prepschool",0,
+data$education=ifelse(data$education==" Prepschool",0,
                             ifelse(data$education==" 1st-4th",0,
                                    ifelse(data$education== "5th-6th",0,
                                           ifelse(data$education==" 7th-8th",0,
@@ -130,15 +134,26 @@ data$education_dummy=ifelse(data$education==" Prepschool",0,
                                                                                                                                                         ifelse(data$education==" Masters",3,
                                                                                                                                                                ifelse(data$education==" Doctorate",4, 5))))))))))))))))
 
-print(data$education_dummy)
+#print(data$education_dummy)
 
 
 ### 8. Native Country
 
-data$native.country_dummy = ifelse(data$native.country==" United-States",0,1)
+data$native.country = ifelse(data$native.country==" United-States",0,1)
 # So most people are from the United States, so I assigned them to 0 and other countries to 1
 
 
+```
+
+```{r}
+#turning occupation into dummy variables
+#install.packages('fastDummies')
+library('fastDummies')
+data <- dummy_cols(data, select_columns = 'occupation')
+```
+```{r}
+#drop original occupation column to keep new dummies
+data <- data[-c(7)]
 ```
 
 
@@ -156,3 +171,42 @@ print(nrow(test))
 ```
 
 
+```{r}
+#checking correlations
+#pairs(adult[sapply(adult, is.numeric)])
+#cor(adult[sapply(adult, is.numeric)])
+```
+
+
+
+#### Model 1: Logistic regression
+
+We will be using logistic regression, because the response variable is a categorical variable that takes 1 if their salary is >=50K.
+
+```{r, warning=FALSE}
+lr.glm = glm(class ~., data = train, family = "binomial")
+glm.pred = predict.glm(lr.glm, test, type = "response")
+yHat = glm.pred > 0.5
+table(test$class,yHat)
+```
+```{r}
+(1485+1640)/(3078+1485+1640+2807)
+```
+The test error rate is very large sitting at about 35%. This means our model only predicted about 65% of the data correctly. 
+
+```{r}
+summary(lr.glm)
+```
+Based on the summary of the logistic regression model we can see thatnot all the variables are important in predicting, so we will try again but this time with the varaibles deemed important.
+
+```{r}
+lr.glm2 = glm(class ~  age+fnlwgt+education.num+marital.status+relationship+sex+capital.gain+capital.loss+hours.per.week+`occupation_ Adm-clerical`+`occupation_ Exec-managerial`+`occupation_ Farming-fishing`+`occupation_ Other-service`+`occupation_ Priv-house-serv`+`occupation_ Prof-specialty`+`occupation_ Protective-serv`+`occupation_ Sales`+`occupation_ Tech-support`, data = train, family = "binomial")
+glm.pred2 = predict.glm(lr.glm2, test, type = "response")
+yHat2 = glm.pred2 > 0.5
+table(test$class,yHat2)
+summary(lr.glm2)
+```
+```{r}
+(1484+1627)/(3079+1484+1627+2820)
+```
+This did about the same. 
