@@ -139,6 +139,8 @@ data$native.country_dummy = ifelse(data$native.country==" United-States",0,1)
 # So most people are from the United States, so I assigned them to 0 and other countries to 1
 
 
+# Omit NA rows
+data = na.omit(data)
 ```
 
 
@@ -155,4 +157,15 @@ print(nrow(train))
 print(nrow(test))
 ```
 
+#### Decision Tree Model
 
+Creating a decision tree model to predict the class variable
+
+```{r}
+library(tree)
+plot.new()
+class.tree = tree(class_dummy ~ native.country_dummy+education_dummy+relationship_dummy+race_dummy+marital.status_dummy+workclass_dummy+sex_dummy+capital.loss+capital.gain+age, data=train)
+summary(class.tree)
+plot(class.tree)
+text(class.tree)
+```
