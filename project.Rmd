@@ -143,6 +143,8 @@ data$native.country = ifelse(data$native.country==" United-States",0,1)
 # So most people are from the United States, so I assigned them to 0 and other countries to 1
 
 
+# Omit NA rows
+data = na.omit(data)
 ```
 
 ```{r}
@@ -170,6 +172,7 @@ print(nrow(train))
 print(nrow(test))
 ```
 
+#### Decision Tree Model
 
 ```{r}
 #checking correlations
@@ -210,3 +213,13 @@ summary(lr.glm2)
 (1484+1627)/(3079+1484+1627+2820)
 ```
 This did about the same. 
+Creating a decision tree model to predict the class variable
+
+```{r}
+library(tree)
+plot.new()
+class.tree = tree(class_dummy ~ native.country_dummy+education_dummy+relationship_dummy+race_dummy+marital.status_dummy+workclass_dummy+sex_dummy+capital.loss+capital.gain+age, data=train)
+summary(class.tree)
+plot(class.tree)
+text(class.tree)
+```
