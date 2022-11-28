@@ -54,6 +54,7 @@ summary(data)
 In this data set, missing values are marked with a "?" character. Since all the missing data occurs in our categorical variables, it does not make sense to replace them with a median or a mean. So we are opting to remove them entirely for our analysis. After removing the observations with missing variables, we are left with 45,222 observations.
 
 ```{r}
+#Adil
 cols_missing_vals <- c("occupation", "workclass", "native.country")
 
 for (column in cols_missing_vals) {
@@ -66,7 +67,8 @@ summary(data)
 #### Set categorical features to dummy variables
 In this data, many categorical variables are needed to be converted to numeric and make a Dummy variable for the response variable.
 
-```{r}
+```{r, results='hide'}
+#Adil & Angelita 
 ### 1. Class  (<=50K or 50K>)
 data$class = ifelse(data$class==" <=50K",0,1) # Our Response Variable. I made 0 for below 50K and 1 for above 50K
 
@@ -148,6 +150,7 @@ data = na.omit(data)
 ```
 
 ```{r}
+#Angelita
 #turning occupation into dummy variables
 #install.packages('fastDummies')
 library('fastDummies')
@@ -164,6 +167,7 @@ data <- data[-c(7)]
 Below, we are now splitting the data into training and testing sets. With the training set containing 80% of the data and the testing set containing 20%. 
 
 ```{r}
+#Dosbol
 sample <- sample(c(TRUE, FALSE), nrow(data), replace=TRUE, prob=c(0.8,0.2))
 train  <- data[sample, ]
 test   <- data[!sample, ]
@@ -172,14 +176,13 @@ print(nrow(train))
 print(nrow(test))
 ```
 
-#### Decision Tree Model
 
 ```{r}
 #checking correlations
-#pairs(adult[sapply(adult, is.numeric)])
-#cor(adult[sapply(adult, is.numeric)])
+pairs(adult[sapply(adult, is.numeric)])
+cor(adult[sapply(adult, is.numeric)])
 ```
-
+Doesn't appear that from the original model there is much correlation between the data, but after making the occupation dummies there may be some correlation between those.
 
 
 #### Model 1: Logistic regression
@@ -187,6 +190,7 @@ print(nrow(test))
 We will be using logistic regression, because the response variable is a categorical variable that takes 1 if their salary is >=50K.
 
 ```{r, warning=FALSE}
+#Angelita
 lr.glm = glm(class ~., data = train, family = "binomial")
 glm.pred = predict.glm(lr.glm, test, type = "response")
 yHat = glm.pred > 0.5
@@ -198,11 +202,13 @@ table(test$class,yHat)
 The test error rate is very large sitting at about 35%. This means our model only predicted about 65% of the data correctly. 
 
 ```{r}
+#Angelita
 summary(lr.glm)
 ```
 Based on the summary of the logistic regression model we can see thatnot all the variables are important in predicting, so we will try again but this time with the varaibles deemed important.
 
 ```{r}
+#Angelita 
 lr.glm2 = glm(class ~  age+fnlwgt+education.num+marital.status+relationship+sex+capital.gain+capital.loss+hours.per.week+`occupation_ Adm-clerical`+`occupation_ Exec-managerial`+`occupation_ Farming-fishing`+`occupation_ Other-service`+`occupation_ Priv-house-serv`+`occupation_ Prof-specialty`+`occupation_ Protective-serv`+`occupation_ Sales`+`occupation_ Tech-support`, data = train, family = "binomial")
 glm.pred2 = predict.glm(lr.glm2, test, type = "response")
 yHat2 = glm.pred2 > 0.5
@@ -215,6 +221,8 @@ summary(lr.glm2)
 This did about the same. 
 Creating a decision tree model to predict the class variable
 
+
+####Decision Tree Model
 ```{r}
 library(tree)
 plot.new()
