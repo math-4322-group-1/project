@@ -187,8 +187,8 @@ print(nrow(test))
 
 ```{r}
 #checking correlations
-pairs(adult[sapply(adult, is.numeric)])
-cor(adult[sapply(adult, is.numeric)])
+#pairs(adult[sapply(adult, is.numeric)])
+#cor(adult[sapply(adult, is.numeric)])
 ```
 Doesn't appear that from the original model there is much correlation between the data, but after making the occupation dummies there may be some correlation between those.
 
@@ -233,12 +233,27 @@ This did about the same, just a little less.
 
 Creating a decision tree model to predict the class variable
 
-####Decision Tree Model
+#### Decision Tree Model
 ```{r}
 library(tree)
 plot.new()
-class.tree = tree(class_dummy ~ native.country_dummy+education_dummy+relationship_dummy+race_dummy+marital.status_dummy+workclass_dummy+sex_dummy+capital.loss+capital.gain+age, data=train)
+class.tree = tree(class ~ ., data=train)
 summary(class.tree)
 plot(class.tree)
 text(class.tree)
 ```
+
+Pruning/Cross Validating tree for optimization
+
+#### Cross Validation of tree
+```{r}
+class.cv = cv.tree(class.tree,FUN = prune.misclass)
+class.cv
+plot(class.cv$size,class.cv$dev,type = "b")
+class.prune = prune.misclass(class.tree,best = 3)
+summary(class.prune)
+plot(class.prune)
+text(class.prune)
+```
+
+
