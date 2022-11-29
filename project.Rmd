@@ -42,7 +42,7 @@ Can we predict if an individual will make 50K or more based on a list of predict
 
 ```{r}
 set.seed(1)
-data = read.csv("adult.csv")
+data = read.csv("adult.csv", stringsAsFactors = T)
 
 summary(data)
 ```
@@ -67,48 +67,51 @@ summary(data)
 #### Set categorical features to dummy variables
 In this data, many categorical variables are needed to be converted to numeric and make a Dummy variable for the response variable.
 
+
 ```{r, results='hide'}
-#Adil & Angelita 
+#Adil & Dosbol & Angelita 
 ### 1. Class  (<=50K or 50K>)
 data$class = ifelse(data$class==" <=50K",0,1) # Our Response Variable. I made 0 for below 50K and 1 for above 50K
-
+data$class = as.factor(data$class)
 
 ### 2. Sex  (Female, Male)
-data$sex = ifelse(data$sex==" Female",0,1)
-
+#data$sex = ifelse(data$sex==" Female",0,1)
+#data$sex = as.factor(data$sex)
 
 
 ### 3. Workclass
-data$workclass = ifelse(data$workclass==" Private",0,
-                                  ifelse(data$workclass==" State-gov",1,
-                                         ifelse(data$workclass ==" Federal-gov",2,
-                                                ifelse(data$workclass == " Self-emp-not-inc",3, 
-                                                       ifelse(data$workclass==" Self-emp-inc",4, 
-                                                              ifelse(data$workclass==" Local-gov",5,6)))))) #
-
+#data$workclass = ifelse(data$workclass==" Private",0,
+#                                  ifelse(data$workclass==" State-gov",1,
+#                                          ifelse(data$workclass ==" Federal-gov",2,
+#                                                ifelse(data$workclass == " Self-emp-not-inc",3, 
+#                                                       ifelse(data$workclass==" Self-emp-inc",4, 
+#                                                              ifelse(data$workclass==" Local-gov",5,6)))))) #
+#data$workclass = as.factor(data$workclass)
 
 
 ### 4. Marital Status
-data$marital.status = ifelse(data$marital.status == " Widowed",0,
-                                   ifelse(data$marital.status == " Divorced",1,
-                                          ifelse(data$marital.status == " Separated",2,
-                                                 ifelse(data$marital.status == " Never-married",3,
-                                                        ifelse(data$marital.status== " Married-civ-spouse",4,
-                                                               ifelse(data$marital.status==" Married-AF-spouse",4,5
-                                                                      ))))))
-
+#data$marital.status = ifelse(data$marital.status == " Widowed",0,
+#                                   ifelse(data$marital.status == " Divorced",1,
+#                                          ifelse(data$marital.status == " Separated",2,
+#                                                 ifelse(data$marital.status == " Never-married",3,
+#                                                        ifelse(data$marital.status== " Married-civ-spouse",4,
+#                                                               ifelse(data$marital.status==" Married-AF-spouse",4,5
+#                                                                      ))))))
+#data$marital.status = as.factor(data$marital.status)
 
 
 
 ### 5. Race
-data$race = ifelse(data$race ==" White",0,
-                         ifelse(data$race == " Black",1,
-                                ifelse(data$race==" Asian-Pac_islander",2,
-                                       ifelse(data$race==" Amer-Indian-Eskimo",3,4))))
-### 6. Relationship
-data$relationship = ifelse(data$relationship==" Husband",1,
-                                 ifelse(data$relationship==" Wife",1,0))
+#data$race = ifelse(data$race ==" White",0,
+#                         ifelse(data$race == " Black",1,
+#                                ifelse(data$race==" Asian-Pac_islander",2,
+#                                       ifelse(data$race==" Amer-Indian-Eskimo",3,4))))
+#data$race = as.factor(data$race)
 
+### 6. Relationship
+#data$relationship = ifelse(data$relationship==" Husband",1,
+#                                 ifelse(data$relationship==" Wife",1,0))
+#data$relationship = as.factor(data$relationship)
 
 
 ### 7. Education
@@ -120,45 +123,50 @@ data$relationship = ifelse(data$relationship==" Husband",1,
 # 3 means all students who are in Masters' Degree
 # 4 means all students who are in Doc 
 # and 5 means UNKNOWNs
-data$education=ifelse(data$education==" Prepschool",0,
-                            ifelse(data$education==" 1st-4th",0,
-                                   ifelse(data$education== "5th-6th",0,
-                                          ifelse(data$education==" 7th-8th",0,
-                                                 ifelse(data$education==" 9th",0, ifelse(data$education==" 10th",0,
-                                                                                                ifelse(data$education==" 11th",0,
-                                                                                                       ifelse(data$education==" 12th",0,
-                                                                                                              ifelse(data$education==" HS-grad",1,
-                                                                                                                     ifelse(data$education==" Assos-voc", 1,
-                                                                                                                            ifelse(data$education==" Assoc-acdm",1,
-                                                                                                                                   ifelse(data$education==" Prof-school",1,
-                                                                                                                                          ifelse(data$education==" Some-college",1,
-                                                                                                                                                 ifelse(data$education==" Bachelors",2,
-                                                                                                                                                        ifelse(data$education==" Masters",3,
-                                                                                                                                                               ifelse(data$education==" Doctorate",4, 5))))))))))))))))
+#data$education=ifelse(data$education==" Prepschool",0,
+#                            ifelse(data$education==" 1st-4th",0,
+#                                   ifelse(data$education== "5th-6th",0,
+#                                          ifelse(data$education==" 7th-8th",0,
+#                                                 ifelse(data$education==" 9th",0, ifelse(data$education==" 10th",0,
+                                                                                                #ifelse(data$education==" 11th",0,
+                                                                                                       #ifelse(data$education==" 12th",0,
+                                                                                                              #ifelse(data$education==" HS-grad",1,
+                                                                                                                  #   ifelse(data$education==" Assos-voc", 1,
+                                                                                                                  #          ifelse(data$education==" Assoc-acdm",1,
+                                                                                                                  #                 ifelse(data$education==" Prof-school",1,
+                                                                                                                  #                        ifelse(data$education==" Some-college",1,
+                                                                                                                  #                               ifelse(data$education==" Bachelors",2,
+                                                                                                                  #                                      ifelse(data$education==" Masters",3,
+#                                                                                                                                                               ifelse(data$education==" Doctorate",4, 5))))))))))))))))
 
 #print(data$education_dummy)
+#data$education = as.factor(data$education)
 
 
 ### 8. Native Country
 
 data$native.country = ifelse(data$native.country==" United-States",0,1)
 # So most people are from the United States, so I assigned them to 0 and other countries to 1
-
+data$native.country = as.factor(data$native.country)
 
 # Omit NA rows
 data = na.omit(data)
 ```
 
-```{r}
+
+
+```{r, results='hide'}
 #Angelita
 #turning occupation into dummy variables
 #install.packages('fastDummies')
-library('fastDummies')
-data <- dummy_cols(data, select_columns = 'occupation')
+#library('fastDummies')
+#data <- dummy_cols(data, select_columns = 'occupation')
+
+#as.factor(data$occupation)
 ```
 ```{r}
 #drop original occupation column to keep new dummies
-data <- data[-c(7)]
+#data <- data[-c(7)]
 ```
 
 
@@ -199,7 +207,7 @@ yHat = glm.pred > 0.5
 table(test$class,yHat)
 ```
 ```{r}
-(1485+1640)/(3078+1485+1640+2807)
+(1477+1664)/(3068+1477+1664+2783)
 ```
 The test error rate is very large sitting at about 35%. This means our model only predicted about 65% of the data correctly. 
 
@@ -211,16 +219,16 @@ Based on the summary of the logistic regression model we can see thatnot all the
 
 ```{r}
 #Angelita 
-lr.glm2 = glm(class ~  age+fnlwgt+education.num+marital.status+relationship+sex+capital.gain+capital.loss+hours.per.week+`occupation_ Adm-clerical`+`occupation_ Exec-managerial`+`occupation_ Farming-fishing`+`occupation_ Other-service`+`occupation_ Priv-house-serv`+`occupation_ Prof-specialty`+`occupation_ Protective-serv`+`occupation_ Sales`+`occupation_ Tech-support`, data = train, family = "binomial")
+lr.glm2 = glm(class ~  age+education+occupation+relationship+sex+capital.gain+capital.loss+hours.per.week, data = train, family = "binomial")
 glm.pred2 = predict.glm(lr.glm2, test, type = "response")
 yHat2 = glm.pred2 > 0.5
 table(test$class,yHat2)
 summary(lr.glm2)
 ```
 ```{r}
-(1484+1627)/(3079+1484+1627+2820)
+(1482+1648)/(3081+1482+1648+2799)
 ```
-This did about the same. 
+This did about the same, just a little less. 
 
 
 Creating a decision tree model to predict the class variable
