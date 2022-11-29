@@ -221,8 +221,9 @@ summary(lr.glm2)
 (1484+1627)/(3079+1484+1627+2820)
 ```
 This did about the same. 
-Creating a decision tree model to predict the class variable
 
+
+Creating a decision tree model to predict the class variable
 
 ####Decision Tree Model
 ```{r}
