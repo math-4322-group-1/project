@@ -189,6 +189,8 @@ Doesn't appear that from the original model there is much correlation between th
 
 We will be using logistic regression, because the response variable is a categorical variable that takes 1 if their salary is >=50K.
 
+The model formula for logistic regression is: $$\frac{e^{b_0 + b_1 x}}{1+e^{b_0 + b_1 x}}$$
+
 ```{r, warning=FALSE}
 #Angelita
 lr.glm = glm(class ~., data = train, family = "binomial")
