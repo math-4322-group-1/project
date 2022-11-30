@@ -41,13 +41,12 @@ class: >50K, <=50K.
 Can we predict if an individual will make 50K or more based on a list of predictors?
 
 ```{r}
+#Dosbol
 set.seed(1)
 data = read.csv("adult.csv", stringsAsFactors = T)
 
 summary(data)
 ```
-
-### Methods
 
 #### Removing missing values. 
 
@@ -69,7 +68,7 @@ In this data, many categorical variables are needed to be converted to numeric a
 
 
 ```{r, results='hide'}
-#Adil & Dosbol & Angelita 
+#Dosbol
 ### 1. Class  (<=50K or 50K>)
 data$class = ifelse(data$class==" <=50K",0,1) # Our Response Variable. I made 0 for below 50K and 1 for above 50K
 data$class = as.factor(data$class)
@@ -175,7 +174,7 @@ data = na.omit(data)
 Below, we are now splitting the data into training and testing sets. With the training set containing 80% of the data and the testing set containing 20%. 
 
 ```{r}
-#Dosbol
+#Adil
 sample <- sample(c(TRUE, FALSE), nrow(data), replace=TRUE, prob=c(0.8,0.2))
 train  <- data[sample, ]
 test   <- data[!sample, ]
@@ -192,10 +191,11 @@ print(nrow(test))
 ```
 Doesn't appear that from the original model there is much correlation between the data, but after making the occupation dummies there may be some correlation between those.
 
+####Methods
 
 #### Model 1: Logistic regression
 
-We will be using logistic regression, because the response variable is a categorical variable that takes 1 if their salary is >=50K.
+We will be using logistic regression, because the response variable is a categorical variable that takes 1 if their salary is >=50K. The advantages of using logistic regression is it is easy to implement and interpret, makes no assumptions about classes within the predictors, provides a measure of which predictors are most important in the predictions, less likely to overfit. The disadvantages of logistic regression is non-linear problems cannot be used with this, requires little to no multicollinearity between independent variables, with high dimensional datasets you can overfit/lead to less accurate results. 
 
 The model formula for logistic regression is: $$\frac{e^{b_0 + b_1 x}}{1+e^{b_0 + b_1 x}}$$
 
@@ -209,13 +209,13 @@ table(test$class,yHat)
 ```{r}
 (1477+1664)/(3068+1477+1664+2783)
 ```
-The test error rate is very large sitting at about 35%. This means our model only predicted about 65% of the data correctly. 
+The test error rate is kind of large sitting at about 35%. This means our model only predicted about 65% of the data correctly. Seeing this error rate, there may be some predictors that are less important/not needed in predicting the response, therefore there could be some predictors we can leave out of the model. So, the next step is to look at the summary to see which of those varibles are significant.  
 
 ```{r}
 #Angelita
 summary(lr.glm)
 ```
-Based on the summary of the logistic regression model we can see thatnot all the variables are important in predicting, so we will try again but this time with the varaibles deemed important.
+Based on the summary of the logistic regression model we can see that not all the variables are important in predicting, so we will try again but this time with the variables deemed important.
 
 ```{r}
 #Angelita 
@@ -228,13 +228,19 @@ summary(lr.glm2)
 ```{r}
 (1482+1648)/(3081+1482+1648+2799)
 ```
-This did about the same, just a little less. 
+The results when removing the less important variables come to be about the same as when leaving them in there. 
 
 
-Creating a decision tree model to predict the class variable
+
 
 #### Decision Tree Model
+
+We will be using decision tree as our second model, because the dimensions of our dataset are pretty large and this should be able to manage it better than the logistic regression did. We are also using it, because our goal is to classify someone 1 if their salary is >=50K or 0 if below 50K. Some advantages of decision trees are: it is easy to understand and interpret, it takes less data preparation, is a non-parametric algorithm therefore needs little to no assumptions for classification, and you can use it for non-linear problems. Some disadvantages are:it can be prone to overfitting the data, it cannot handle too many features so you have to do feature reduction, can have high variances and changes to the data can have a large affect in the predictions.  
+
+
+Here we create the tree and plot it. 
 ```{r}
+#UD
 library(tree)
 plot.new()
 class.tree = tree(class ~ ., data=train)
@@ -245,8 +251,11 @@ text(class.tree)
 
 Pruning/Cross Validating tree for optimization
 
+
+Here we are pruning the tree to obtain better results. 
 #### Cross Validation of tree
 ```{r}
+#UD
 class.cv = cv.tree(class.tree,FUN = prune.misclass)
 class.cv
 plot(class.cv$size,class.cv$dev,type = "b")
@@ -255,5 +264,12 @@ summary(class.prune)
 plot(class.prune)
 text(class.prune)
 ```
+
+####Conclusion 
+
+
+
+####Bibliography
+
 
 
