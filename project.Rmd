@@ -99,6 +99,7 @@ print(nrow(test))
 
 
 ```{r}
+#Angelita
 #checking correlations
 pairs(adult[sapply(adult, is.numeric)])
 cor(adult[sapply(adult, is.numeric)])
