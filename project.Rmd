@@ -238,7 +238,7 @@ The results when removing the less important variables come to be about the same
 We will be using decision tree as our second model, because the dimensions of our dataset are pretty large and this should be able to manage it better than the logistic regression did. We are also using it, because our goal is to classify someone 1 if their salary is >=50K or 0 if below 50K. Some advantages of decision trees are: it is easy to understand and interpret, it takes less data preparation, is a non-parametric algorithm therefore needs little to no assumptions for classification, and you can use it for non-linear problems. Some disadvantages are:it can be prone to overfitting the data, it cannot handle too many features so you have to do feature reduction, can have high variances and changes to the data can have a large affect in the predictions.  
 
 
-Here we create the tree and plot it. 
+Here we create the tree model $y = response ~ x1+x2+x3+...$, where response variable is "class" and xi to xn are the variables used in prediction, and plot it. 
 ```{r}
 #Udochukwu Amaefule
 library(tree)
