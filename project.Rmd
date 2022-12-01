@@ -8,9 +8,10 @@ output: word_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
 ## Project 1
+Members: Angelita Krepel, Adil Iqbal, Dosbol Aliev, 
 
+\newpage
 ### Introduction
 
 This data was extracted from the U.S. Census in 1994. Our goal will be to predict whether an individual earns more than $50,000 USD per year (`class`) based on data collected by the census alone. Examples of data collected by the census include education level (`education`), marital status (`marital.status`), and country of origin (`native.country`) among others. All features are either categorical or continuous integer values.
