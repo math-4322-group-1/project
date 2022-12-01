@@ -1,6 +1,10 @@
 ---
 title: "Project Group 1"
+<<<<<<< HEAD
 author: "Adil Iqbal, Angelita Krepel, Dosbol Aliev, Udochukwu Amaefule, Malik Taylor"
+=======
+author: "Adil Iqbal, Angelita Krepel, Dosbol Aliev, Udochukwu Amaefule, Malik"
+>>>>>>> 1fb8fb148452bca1ddcc475b8f434eefbd16fd1a
 date: "11/22/2022"
 description: "Classification of Wages"
 output: word_document
@@ -181,7 +185,10 @@ plot(class.prune)
 text(class.prune)
 ```
 After pruning the tree model remains with a misclassification rate of 0.3627 or 36.3% as expected.
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1fb8fb148452bca1ddcc475b8f434eefbd16fd1a
 
 #### Best Model
 Based on our models and their respective test error rates, the logistic regression model performed better showing to be the more accurate model in predicting whether or not an individual earns more than $50,000 USD per year. With a misclassification error rate of about 34.739% for the logistic regression model and 36.27% for the decision tree model. It is clear to see that logistic regression model does in fact perform slightly more accurate than the decision tree model. For the decision tree model, it is important to note that this test error rate comes after applying the pruning method to our model.
