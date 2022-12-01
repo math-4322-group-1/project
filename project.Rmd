@@ -265,11 +265,19 @@ plot(class.prune)
 text(class.prune)
 ```
 
+####Best Model
+Based on our models and their respective test error rates, the logistic regression model performed better showing to be the more accurate model in predicting wheather or not an individual earns more tha $50,000 USD per year. With an error rate of about 34.739% for the logisitc regression model and 36.27% for the decision tree model. It is clear to see that logistic regression model does in fact perform slightly more accurate than the descision tree model. For the decision tree model, it is important to note that this test error rate comes after applying the pruning method to our model.
+
 ####Conclusion 
 
 
 
 ####Bibliography
+Satyam, Kumar. “Decision Tree in R Programming.” GeeksforGeeks, 3 Dec. 2021, 	https://www.geeksforgeeks.org/decision-tree-in-r-programming/. 
+
+“Home.” OARC Stats, https://stats.oarc.ucla.edu/r/dae/logit-regression/. 
+
+Mishra, Rishu. “Cross-Validation in R Programming.” GeeksforGeeks, 15 Sept. 2021, 	https://www.geeksforgeeks.org/cross-validation-in-r-programming/. 
 
 
 
