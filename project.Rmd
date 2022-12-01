@@ -52,7 +52,7 @@ summary(data)
 
 In this data set, missing values are marked with a "?" character. Since all the missing data occurs in our categorical variables, it does not make sense to replace them with a median or a mean. So we are opting to remove them entirely for our analysis. After removing the observations with missing variables, we are left with 45,222 observations.
 
-```{r}
+```{r, results='hide'}
 #Adil
 cols_missing_vals <- c("occupation", "workclass", "native.country")
 
@@ -126,13 +126,13 @@ table(test$class,yHat)
 ```
 The test error rate is kind of large sitting at about 35%. This means our model only predicted about 65% of the data correctly. Seeing this error rate, there may be some predictors that are less important/not needed in predicting the response, therefore there could be some predictors we can leave out of the model. So, the next step is to look at the summary to see which of those varibles are significant.  
 
-```{r}
+```{r, results='hide'}
 #Angelita
 summary(lr.glm)
 ```
-Based on the summary of the logistic regression model we can see that not all the variables are important in predicting, so we will try again but this time with the variables deemed important.
+(We are hiding the results because it will make the final too many pages, run it in the base code to see the results). Based on the summary of the logistic regression model we can see that not all the variables are important in predicting, so we will try again but this time with the variables deemed important.
 
-```{r}
+```{r, results='hide'}
 #Angelita 
 lr.glm2 = glm(class ~  age+education+occupation+relationship+sex+capital.gain+capital.loss+hours.per.week, data = train, family = "binomial")
 glm.pred2 = predict.glm(lr.glm2, test, type = "response")
