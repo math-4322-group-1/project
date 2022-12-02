@@ -1,12 +1,7 @@
 ---
 title: "Project Group 1"
-<<<<<<< HEAD
 author: "Adil Iqbal, Angelita Krepel, Dosbol Aliev, Udochukwu Amaefule, Malik Taylor"
-=======
-author: "Adil Iqbal, Angelita Krepel, Dosbol Aliev, Udochukwu Amaefule, Malik"
->>>>>>> 1fb8fb148452bca1ddcc475b8f434eefbd16fd1a
 date: "11/22/2022"
-description: "Classification of Wages"
 output: word_document
 ---
 
