@@ -108,6 +108,8 @@ Doesn't appear that from the original model there is much correlation between th
 
 ####Methods
 
+Below, we will run our methodology on the pair of train/test set generated above. But will run our methods 10 times and deliver the average misclassification errors at the end of the experiment.
+
 #### Model 1: Logistic regression
 
 We will be using logistic regression, because the response variable is a categorical variable that takes 1 if their salary is >=50K. The advantages of using logistic regression is it is easy to implement and interpret, makes no assumptions about classes within the predictors, provides a measure of which predictors are most important in the predictions, less likely to overfit. The disadvantages of logistic regression is non-linear problems cannot be used with this, requires little to no multicollinearity between independent variables, with high dimensional datasets you can overfit/lead to less accurate results. 
@@ -116,13 +118,20 @@ The model formula for logistic regression is: $$\frac{e^{b_0 + b_1 x}}{1+e^{b_0 
 
 ```{r, warning=FALSE}
 #Angelita
+
+
 lr.glm = glm(class ~., data = train, family = "binomial")
 glm.pred = predict.glm(lr.glm, test, type = "response")
 yHat = glm.pred > 0.5
-table(test$class,yHat)
+x1 <- table(test$class,yHat)
 ```
 ```{r}
-(1477+1664)/(3068+1477+1664+2783)
+log_reg_misclass <- function(table) {
+  return((table[1,2]+table[2,1])/(table[1,1]+table[1,2]+table[2,1]+table[2,2]))  
+} 
+
+x2 <- log_reg_misclass(x1)
+x2
 ```
 The test error rate is kind of large sitting at about 35%. This means our model only predicted about 65% of the data correctly. Seeing this error rate, there may be some predictors that are less important/not needed in predicting the response, therefore there could be some predictors we can leave out of the model. So, the next step is to look at the summary to see which of those varibles are significant.  
 
@@ -134,14 +143,21 @@ summary(lr.glm)
 
 ```{r, results='hide'}
 #Angelita 
+
 lr.glm2 = glm(class ~  age+education+occupation+relationship+sex+capital.gain+capital.loss+hours.per.week, data = train, family = "binomial")
-glm.pred2 = predict.glm(lr.glm2, test, type = "response")
-yHat2 = glm.pred2 > 0.5
-table(test$class,yHat2)
+
+do_logistic_regression <- function(train, test) {
+  pred = predict.glm(lr.glm2, test, type = "response")
+  yHat2 = pred > 0.5
+  return(table(test$class,yHat2))
+}
+
+
+x2 <- do_logistic_regression(train, test)
 summary(lr.glm2)
 ```
 ```{r}
-(1482+1648)/(3081+1482+1648+2799)
+log_reg_misclass(x2)
 ```
 The results when removing the less important variables come to be about the same as when leaving them in there. 
 
@@ -154,12 +170,17 @@ We will be using decision tree as our second model, because the dimensions of ou
 Here we create the tree model $y = response ~ x1+x2+x3+...$, where response variable is "class" and xi to xn are the variables used in prediction, and plot it. 
 ```{r}
 #Udochukwu Amaefule
-library(tree)
-plot.new()
-class.tree = tree(class ~ ., data=train)
-summary(class.tree)
-plot(class.tree)
-text(class.tree)
+do_decision_tree = function(train) {
+  library(tree)
+  plot.new()
+  class.tree = tree(class ~ ., data=train)
+  summary(class.tree)
+  plot(class.tree)
+  text(class.tree)
+  return(class.tree)
+}
+
+baseTree = do_decision_tree(train)
 ```
 As seen above, the tree model makes use of only 3 of the several variables available, "relationship", "capital.gain", "education". The model has 5 terminal nodes and a misclassification error rate of 0.3627 or 36.3%
 
@@ -170,16 +191,40 @@ As shown above, the original tree has 5 terminal nodes. On the right half of the
 
 #### Cross Validation of tree
 ```{r}
+find_best_pruning_param = function(class_cv) {
+  mn = Inf; 
+  mn_idx = -1
+  for (x in length(class_cv$dev):1) { 
+    if (class_cv$dev[x] < mn) { mn = class_cv$dev[x]; mn_idx = x }
+  }
+  return(class_cv$size[mn_idx])
+}
+```
+
+```{r}
 #Udochukwu Amaefule
-class.cv = cv.tree(class.tree,FUN = prune.misclass)
-class.cv
-plot(class.cv$size,class.cv$dev,type = "b")
-class.prune = prune.misclass(class.tree,best = 3)
-summary(class.prune)
-plot(class.prune)
-text(class.prune)
+cv_decision_tree = function(baseTree) {
+  class.cv = cv.tree(baseTree,FUN = prune.misclass)
+  min_index = find_best_pruning_param(class.cv)
+  plot(class.cv$size,class.cv$dev,type = "b")
+  class.prune = prune.misclass(baseTree,best = min_index)
+  summary(class.prune)
+  plot(class.prune)
+  text(class.prune)
+  x <- summary(baseTree)
+  return(x$misclass[1]/x$misclass[2])
+}
+
+errorRate = cv_decision_tree(baseTree)
+errorRate
 ```
 After pruning the tree model remains with a misclassification rate of 0.3627 or 36.3% as expected.
+
+#### Average of 10 Trials
+
+```{r}
+
+```
 
 #### Best Model
 Based on our models and their respective test error rates, the logistic regression model performed better showing to be the more accurate model in predicting whether or not an individual earns more than $50,000 USD per year. With a misclassification error rate of about 34.739% for the logistic regression model and 36.27% for the decision tree model. It is clear to see that logistic regression model does in fact perform slightly more accurate than the decision tree model. For the decision tree model, it is important to note that this test error rate comes after applying the pruning method to our model.
