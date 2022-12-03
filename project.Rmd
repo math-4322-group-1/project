@@ -1,5 +1,6 @@
 ---
-title: "Project Group 1"
+title: "Income Prediction"
+subtitle: "Can we predict someone's earnings based on demographic information?"
 author: "Adil Iqbal, Angelita Krepel, Dosbol Aliev, Udochukwu Amaefule, Malik Taylor"
 date: "11/22/2022"
 output: word_document
@@ -147,6 +148,7 @@ summary(lr.glm)
 lr.glm2 = glm(class ~  age+education+occupation+relationship+sex+capital.gain+capital.loss+hours.per.week, data = train, family = "binomial")
 
 do_logistic_regression <- function(train, test) {
+  lr.glm2 = glm(class ~  age+education+occupation+relationship+sex+capital.gain+capital.loss+hours.per.week, data = train, family = "binomial")
   pred = predict.glm(lr.glm2, test, type = "response")
   yHat2 = pred > 0.5
   return(table(test$class,yHat2))
@@ -170,17 +172,19 @@ We will be using decision tree as our second model, because the dimensions of ou
 Here we create the tree model $y = response ~ x1+x2+x3+...$, where response variable is "class" and xi to xn are the variables used in prediction, and plot it. 
 ```{r}
 #Udochukwu Amaefule
+
+library(tree)
+plot.new()
+
 do_decision_tree = function(train) {
-  library(tree)
-  plot.new()
   class.tree = tree(class ~ ., data=train)
-  summary(class.tree)
-  plot(class.tree)
-  text(class.tree)
   return(class.tree)
 }
 
 baseTree = do_decision_tree(train)
+summary(baseTree)
+plot(baseTree)
+text(baseTree)
 ```
 As seen above, the tree model makes use of only 3 of the several variables available, "relationship", "capital.gain", "education". The model has 5 terminal nodes and a misclassification error rate of 0.3627 or 36.3%
 
@@ -222,19 +226,61 @@ After pruning the tree model remains with a misclassification rate of 0.3627 or 
 
 #### Average of 10 Trials
 
-```{r}
+Now that we have built our models, we will evaluate them over 10 trials to determine the average misclassification rate. 
 
+```{r}
+# Redefined to avoid plots.
+cv_decision_tree = function(baseTree) {
+  class.cv = cv.tree(baseTree,FUN = prune.misclass)
+  min_index = find_best_pruning_param(class.cv)
+  class.prune = prune.misclass(baseTree,best = min_index)
+  x <- summary(baseTree)
+  return(x$misclass[1]/x$misclass[2])
+}
 ```
 
+```{r}
+iterations = 10
+lr_err_total = 0
+dtree_err_total = 0
+
+for (x in 1:iterations) {
+  set.seed(x)
+  
+  sample <- sample(c(TRUE, FALSE), nrow(data), replace=TRUE, prob=c(0.8,0.2))
+  train  <- data[sample, ]
+  test   <- data[!sample, ]
+  
+  table = do_logistic_regression(train, test)
+  lr_err = log_reg_misclass(table)
+  lr_err_total = lr_err_total + lr_err
+  
+  baseTree = do_decision_tree(train)
+  dtree_err = cv_decision_tree(baseTree)
+  dtree_err_total = dtree_err_total + dtree_err
+  
+  print(lr_err)
+  print(dtree_err)
+  print('--')
+}
+
+print('--- AVERAGE ERR ---')
+print(lr_err_total / iterations)
+print(dtree_err_total / iterations)
+```
+We can see from the above experiment, that the average misclassification rate for our linear regression model over 10 trials is 35.051% and our average misclassification rate for our decision tree is 36.187%
+
+
 #### Best Model
-Based on our models and their respective test error rates, the logistic regression model performed better showing to be the more accurate model in predicting whether or not an individual earns more than $50,000 USD per year. With a misclassification error rate of about 34.739% for the logistic regression model and 36.27% for the decision tree model. It is clear to see that logistic regression model does in fact perform slightly more accurate than the decision tree model. For the decision tree model, it is important to note that this test error rate comes after applying the pruning method to our model.
+Based on our models and their respective test error rates, the logistic regression model performed better showing to be the more accurate model in predicting whether or not an individual earns more than $50,000 USD per year. With a misclassification error rate of about 35.051% for the logistic regression model and 36.187% for the decision tree model. It is clear to see that logistic regression model does in fact perform slightly more accurate than the decision tree model. For the decision tree model, it is important to note that this test error rate comes after applying the pruning method to our model.
 
 #### Conclusion 
-When using the logistic regression model we were able to achieve the smallest misclassificaiton error rate, and therefore is the best approach to our problem. Our initial error rate was 34.93%, after determining which predictors were not needed in our model we were able to improve our test error rate, however the improvement made only a slight difference, less than a 1%. The predictors found to be important to our model are the following: age, education, occupation, relationship, sex, capital.gain, capital.loss, hours.per.week. We would like to predict whether an individual will make $50,000 based on these important predictors. We do believe that these variables are significant in our prediction as those with a higher level of education such as a bachelors and higher, do in fact on average earn a higher salary then those with less education. One’s occupation also has a direct affect on one’s salary as well and generally higher paying occupations can be obtained with a higher level of education. Individuals that work more hours are often times compensated for their hours worked, through hourly pay or even overtime based compensation which has an effect on how much their yearly income is.
+When using the logistic regression model we were able to achieve the smallest misclassificaiton error rate, and therefore is the best approach to our problem. Our initial error rate was 34.73%, after determining which predictors were not needed in our model we were able to improve our test error rate, however the improvement made only a slight difference, less than a 1%. The predictors found to be important to our model are the following: age, education, occupation, relationship, sex, capital.gain, capital.loss, hours.per.week. We would like to predict whether an individual will make $50,000 based on these important predictors. We do believe that these variables are significant in our prediction as those with a higher level of education such as a bachelors and higher, do in fact on average earn a higher salary then those with less education. One’s occupation also has a direct affect on one’s salary as well and generally higher paying occupations can be obtained with a higher level of education. Individuals that work more hours are often times compensated for their hours worked, through hourly pay or even overtime based compensation which has an effect on how much their yearly income is.
 
 
 #### Bibliography
 Satyam, Kumar. “Decision Tree in R Programming.” GeeksforGeeks, 3 Dec. 2021, https://www.geeksforgeeks.org/decision-tree-in-r-programming/.
+
 “Home.” OARC Stats, https://stats.oarc.ucla.edu/r/dae/logit-regression/.
 Mishra, Rishu. “Cross-Validation in R Programming.” GeeksforGeeks, 15 Sept. 2021, https://www.geeksforgeeks.org/cross-validation-in-r-programming/.
 
